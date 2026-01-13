@@ -29,7 +29,6 @@ class Solution {
         for(int[] edge: edges){
             int a = edge[0];
             int b = edge[1];
-            System.out.println(Arrays.toString(parent));
             if(find(a,parent)==find(b,parent)){
                 return edge;
             }
