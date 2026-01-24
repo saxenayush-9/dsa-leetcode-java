@@ -4,7 +4,7 @@ class Solution {
         for(Integer i : nums){
             total+=i;
         }
-         if (Math.abs(target) > total) return 0;
+        if (Math.abs(target) > total) return 0;
         target=total+target;
         if(target%2!=0)return 0;
         target/=2;
