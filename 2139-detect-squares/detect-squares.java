@@ -1,5 +1,5 @@
 class DetectSquares {
-    List<String> points;
+    List<int[]> points;
     HashMap<String,Integer> frequency;
 
     public DetectSquares() {
@@ -9,7 +9,7 @@ class DetectSquares {
     
     public void add(int[] point) {
         String newPoint = point[0]+","+point[1];
-        points.add(newPoint);
+        points.add(point);
         if(frequency.containsKey(newPoint)){
             frequency.put(newPoint,frequency.get(newPoint)+1);
         }
@@ -22,10 +22,9 @@ class DetectSquares {
         int x = point[0];
         int y = point[1];
         int totalNumberOfWays=0;
-        for(String pnt : points){
-            String[] currPoint = pnt.trim().split(",");
-            int px = Integer.parseInt(currPoint[0]);
-            int py = Integer.parseInt(currPoint[1]);
+        for(int[] pnt : points){
+            int px = pnt[0];
+            int py = pnt[1];
             if(Math.abs(x-px)!=Math.abs(y-py) || px==x || py==y){
                 continue;
             }
