@@ -32,11 +32,11 @@ class Solution {
     }
     public TreeNode delete(TreeNode root, TreeNode node, TreeNode parent){
         if(node.left!=null && node.right!=null){
-            TreeNode pred = node.left;
+            TreeNode pred = node.right;
             TreeNode predParent = node;
-            while(pred.right!=null){
+            while(pred.left!=null){
                 predParent = pred;
-                pred=pred.right;
+                pred=pred.left;
             }
             node.val=pred.val;
             node=pred;
