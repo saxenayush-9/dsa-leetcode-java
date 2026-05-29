@@ -4,12 +4,12 @@ class Solution {
         int e1 = interval1[1];
         int s2 = interval2[0];
         int e2 = interval2[1];
-        if (s2 > e1 || e2 < s1)
+        if (e2 < s1 || e1 < s2)
             return false;
         return true;
     }
 
-    public int[] mergeIntervals(int[] interval1, int[] interval2) {
+    public int[] merge(int[] interval1, int[] interval2) {
         int s1 = interval1[0];
         int e1 = interval1[1];
         int s2 = interval2[0];
@@ -18,22 +18,25 @@ class Solution {
     }
 
     public int[][] merge(int[][] intervals) {
-        Arrays.sort(intervals, (a, b) -> a[0] - b[0]);
-        List<int[]> li = new ArrayList<>();
+        if (intervals.length == 1)
+            return intervals;
         int n = intervals.length;
-        for (int i = 1; i < n; i++) {
-            if (!overlap(intervals[i], intervals[i - 1])) {
-                li.add(intervals[i - 1]);
-            } else {
-                intervals[i] = mergeIntervals(intervals[i - 1], intervals[i]);
+        List<int[]> list = new ArrayList<>();
+        Arrays.sort(intervals, (a, b) -> a[0] - b[0]);
+
+        for(int i=1;i<n;i++){
+            if(!overlap(intervals[i],intervals[i-1])){
+                list.add(intervals[i-1]);
+            }
+            else{
+                intervals[i]=merge(intervals[i],intervals[i-1]);
             }
         }
-        li.add(intervals[n - 1]);
-        int[][] res = new int[li.size()][2];
-        for (int i = 0; i < res.length; i++) {
-            res[i][0] = li.get(i)[0];
-            res[i][1] = li.get(i)[1];
+        list.add(intervals[n-1]);
+        int[][] arr = new int[list.size()][2];
+        for (int j = 0; j < arr.length; j++) {
+            arr[j] = list.get(j);
         }
-        return res;
+        return arr;
     }
 }
