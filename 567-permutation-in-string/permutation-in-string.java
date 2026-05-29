@@ -1,45 +1,36 @@
 class Solution {
     public boolean checkInclusion(String s1, String s2) {
-        int n = s1.length();
-        int m = s2.length();
-        if(n>m)return false;
-        int[] keyArr = new int[256];
-        for (int i = 0; i < n; i++) {
-            keyArr[s1.charAt(i) - 'a']++;
+        if(s1.length()>s2.length())return false;
+        int[] freq = new int[26];
+        for (int i = 0; i < s1.length(); i++) {
+            int index = s1.charAt(i) - 'a';
+            freq[index]++;
         }
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < 256; i++) {
-            sb.append(keyArr[i] + "#");
+        int k = s1.length();
+        int[] subfreq = new int[26];
+        for (int i = 0; i < k; i++) {
+            int index = s2.charAt(i) - 'a';
+            subfreq[index]++;
         }
-
-        String key = sb.toString();
-
-        for (int i = 0; i < 256; i++) {
-            keyArr[i] = 0;
-        }
-
-        for (int i = 0; i < n; i++) {
-            keyArr[s2.charAt(i) - 'a']++;
-        }
-        StringBuilder sb1 = new StringBuilder();
-        for (int i = 0; i < 256; i++) {
-            sb1.append(keyArr[i] + "#");
-        }
-        String key1 = sb1.toString();
-
-        if (key.equals(key1))
-            return true;
-
-        for (int i = n; i < m; i++) {
-            keyArr[s2.charAt(i - n) - 'a']--;
-            keyArr[s2.charAt(i) - 'a']++;
-            StringBuilder sb2 = new StringBuilder();
-            for (int j = 0; j < 256; j++) {
-                sb2.append(keyArr[j] + "#");
+        int count = 0;
+        for (int j = 0; j < 26; j++) {
+            if (freq[j] != subfreq[j]) {
+                count++;
             }
-            String keyTemp = sb2.toString();
-            if (key.equals(keyTemp))
-                return true;
+        }
+        if (count == 0) return true;
+        int i = k;
+        while (i < s2.length()) {
+            subfreq[s2.charAt(i-k) - 'a']--;
+            subfreq[s2.charAt(i) - 'a']++;
+            count = 0;
+            for (int j = 0; j < 26; j++) {
+                if (freq[j] != subfreq[j]) {
+                    count++;
+                }
+            }
+            if (count == 0) return true;
+            i++;
         }
         return false;
     }
