@@ -12,7 +12,6 @@ class Solution {
                 sb.append(arr[i]+",");
             }
             String key = sb.toString();
-            System.out.println(key);
             if(hmap.containsKey(key)){
                 hmap.get(key).add(str);
             }
