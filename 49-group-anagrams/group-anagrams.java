@@ -18,7 +18,6 @@ class Solution {
             }
 
             String key = s.toString();
-            System.out.println(key);
             if(!hmap.containsKey(key)){
                 List<String> li = new ArrayList<>();
                 li.add(str);
