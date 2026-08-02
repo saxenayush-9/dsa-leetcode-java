@@ -1,7 +1,8 @@
 class Solution {
     List<List<String>> list;
+
     public boolean isPalindrome(String str){
-        int low=0,high=str.length()-1;
+        int low = 0, high = str.length()-1;
         while(low<=high){
             if(str.charAt(low)!=str.charAt(high)){
                 return false;
@@ -13,7 +14,7 @@ class Solution {
     }
     public List<List<String>> partition(String s) {
         List<List<String>> list = new ArrayList<>();
-        this.list = list;
+        this.list=list;
         traverse(s,0,new ArrayList<>());
         return list;
     }
