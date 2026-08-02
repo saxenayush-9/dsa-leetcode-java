@@ -1,30 +1,28 @@
 class Solution {
     List<List<Integer>> list;
-    int[] nums;
     public List<List<Integer>> combinationSum2(int[] candidates, int target) {
         List<List<Integer>> list = new ArrayList<>();
-        Arrays.sort(candidates);
         this.list=list;
-        this.nums=candidates;
-        List<Integer> li = new ArrayList<>();
-        solve(li,0,target);
+        Arrays.sort(candidates);
+        traverse(candidates,0,target,new ArrayList<>());
         return list;
     }
-    public void solve(List<Integer> li, int start, int target){
-        if(start==nums.length){
+
+    public void traverse(int[] candidates, int start, int target, List<Integer> li){
+        if(target<0)return;
+        if(start==candidates.length){
             if(target==0){
                 list.add(new ArrayList<>(li));
             }
             return;
-        }
-        if(target<0)return;
-        li.add(nums[start]);
-        solve(li,start+1,target-nums[start]);
+        };
+        li.add(candidates[start]);
+        traverse(candidates,start+1,target-candidates[start],li);
         li.remove(li.size()-1);
         int index = start+1;
-        while(index<nums.length && nums[index]==nums[index-1]){
+        while(index<candidates.length && candidates[index]==candidates[index-1]){
             index++;
         }
-        solve(li,index,target);
+        traverse(candidates,index,target,li);
     }
 }
