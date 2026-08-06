@@ -16,7 +16,7 @@ class Solution {
             board.add(sb.toString());
         }
 
-        boolean[] visitedCol = new boolean[n];
+        HashSet<Integer> visitedCol =  new HashSet<>();
         HashSet<Integer> visitedDiagonal1 = new HashSet<>();
         HashSet<Integer> visitedDiagonal2 = new HashSet<>();
 
@@ -24,14 +24,14 @@ class Solution {
         return list;
     }
 
-    public boolean isValid(int row,int col, boolean[] visitedCol, HashSet<Integer> visitedDiagonal1,HashSet<Integer> visitedDiagonal2){
-        if(visitedCol[col])return false;
+    public boolean isValid(int row,int col, HashSet<Integer> visitedCol, HashSet<Integer> visitedDiagonal1,HashSet<Integer> visitedDiagonal2){
+        if(visitedCol.contains(col))return false;
         if(visitedDiagonal1.contains(row-col))return false;
         if(visitedDiagonal2.contains(row+col))return false;
         return true;
     };
 
-    public void solve(int n, int row, List<String> board, boolean[] visitedCol, HashSet<Integer> visitedDiagonal1, HashSet<Integer> visitedDiagonal2){
+    public void solve(int n, int row, List<String> board, HashSet<Integer> visitedCol, HashSet<Integer> visitedDiagonal1, HashSet<Integer> visitedDiagonal2){
         if(row==n){
             list.add(new ArrayList<>(board));
             return;
@@ -45,7 +45,7 @@ class Solution {
             sbPlace.setCharAt(col,'Q');
             board.set(row,sbPlace.toString());
             
-            visitedCol[col]=true;
+            visitedCol.add(col);
             visitedDiagonal1.add(row-col);
             visitedDiagonal2.add(row+col);
 
@@ -56,7 +56,7 @@ class Solution {
             sbUnplace.setCharAt(col,'.');
             board.set(row,sbUnplace.toString());
             
-            visitedCol[col]=false;
+            visitedCol.remove(col);
             visitedDiagonal1.remove(row-col);
             visitedDiagonal2.remove(row+col);
         }
