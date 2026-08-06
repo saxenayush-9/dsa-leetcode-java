@@ -3,58 +3,62 @@ class Solution {
     public List<List<String>> solveNQueens(int n) {
         List<List<String>> list = new ArrayList<>();
         this.list=list;
-        List<String> li = new ArrayList<>();
-        for(int i=0;i<n;i++){
-            StringBuilder sb = new StringBuilder();
-            for(int j=0;j<n;j++){
-                sb.append(".");
-            }
-            li.add(sb.toString());
-        }
-        boolean[] visitedCol = new boolean[n];
-        HashSet<Integer> diagonal1 = new HashSet<>();
-        HashSet<Integer> diagonal2 = new HashSet<>();
 
-        dfs(n, 0, visitedCol, li, diagonal1, diagonal2);
+        List<String> board = new ArrayList<>();
+
+        StringBuilder sb = new StringBuilder();
+
+        for(int i=0;i<n;i++){
+            sb.append('.');
+        }
+
+        for(int i=0;i<n;i++){
+            board.add(sb.toString());
+        }
+
+        boolean[] visitedCol = new boolean[n];
+        HashSet<Integer> visitedDiagonal1 = new HashSet<>();
+        HashSet<Integer> visitedDiagonal2 = new HashSet<>();
+
+        solve(n,0,board,visitedCol,visitedDiagonal1,visitedDiagonal2);
         return list;
     }
 
-    public void dfs(int n, int row, boolean[] visitedCol, List<String> li,  HashSet<Integer> diagonal1,HashSet<Integer> diagonal2){
+    public boolean isValid(int row,int col, boolean[] visitedCol, HashSet<Integer> visitedDiagonal1,HashSet<Integer> visitedDiagonal2){
+        if(visitedCol[col])return false;
+        if(visitedDiagonal1.contains(row-col))return false;
+        if(visitedDiagonal2.contains(row+col))return false;
+        return true;
+    };
+
+    public void solve(int n, int row, List<String> board, boolean[] visitedCol, HashSet<Integer> visitedDiagonal1, HashSet<Integer> visitedDiagonal2){
         if(row==n){
-            list.add(new ArrayList<>(li));
+            list.add(new ArrayList<>(board));
             return;
         }
         for(int col=0;col<n;col++){
-            if(visitedCol[col] || diagonal1.contains(row-col) || diagonal2.contains(row+col)){
+            if(!isValid(row,col,visitedCol,visitedDiagonal1,visitedDiagonal2)){
                 continue;
             }
-
-            char[] currRow = li.get(row).toCharArray();
-            currRow[col]='Q';
-            StringBuilder sb = new StringBuilder();
-            for(int i=0;i<n;i++){
-                sb.append(currRow[i]);
-            }
-            li.set(row,sb.toString());
-
-            diagonal1.add(row-col);
-            diagonal2.add(row+col);
+            //place the queen
+            StringBuilder sbPlace = new StringBuilder(board.get(row));
+            sbPlace.setCharAt(col,'Q');
+            board.set(row,sbPlace.toString());
+            
             visitedCol[col]=true;
+            visitedDiagonal1.add(row-col);
+            visitedDiagonal2.add(row+col);
 
-            dfs(n, row+1, visitedCol, li,  diagonal1, diagonal2);
+            solve(n,row+1,board,visitedCol,visitedDiagonal1,visitedDiagonal2);
 
-            currRow = li.get(row).toCharArray();
-            currRow[col]= '.';
-            sb = new StringBuilder();
-            for(int i=0;i<n;i++){
-                sb.append(currRow[i]);
-            }
-
-            diagonal1.remove(row-col);
-            diagonal2.remove(row+col);
+            //unplace the queen
+            StringBuilder sbUnplace = new StringBuilder(board.get(row));
+            sbUnplace.setCharAt(col,'.');
+            board.set(row,sbUnplace.toString());
+            
             visitedCol[col]=false;
-
-            li.set(row,sb.toString());
+            visitedDiagonal1.remove(row-col);
+            visitedDiagonal2.remove(row+col);
         }
     }
 }
