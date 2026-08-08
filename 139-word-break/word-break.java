@@ -1,17 +1,35 @@
 class Solution {
+    Set<String> dict;
     public boolean wordBreak(String s, List<String> wordDict) {
-        int n = s.length();
-        boolean[] dp = new boolean[n+1];
-        dp[0]=true;
-        for(int i=1;i<=n;i++){
-            for(String str : wordDict){
-                if(str.length()>i)continue;
-                if(s.substring(i-str.length(),i).equals(str) && dp[i-str.length()]){
-                    dp[i]=true;
-                    break;
-                }
+        Set<String> dict = new HashSet<>();
+        for(String str: wordDict){
+            dict.add(str);
+        }
+        this.dict=dict;
+        int[] memo = new int[s.length()];
+        Arrays.fill(memo,-1);
+        return solve(s,0,memo);
+    }
+
+    public boolean solve(String s,int start,int[] memo){
+        if(start==s.length()){
+            return true;
+        }
+        int currState = memo[start];
+        if(currState!=-1){
+            if(currState==1)return true;
+            return false;
+        }
+
+        for(int i=start;i<s.length();i++){
+            String str = s.substring(start,i+1);
+            if(!dict.contains(str))continue;
+            if(solve(s,i+1,memo)){
+                memo[start]=1;
+                return true;
             }
         }
-        return dp[n];
+        memo[start]=0;
+        return false;
     }
 }
