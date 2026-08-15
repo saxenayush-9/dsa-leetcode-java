@@ -14,13 +14,11 @@ class Solution {
             if(s.charAt(i-2)!='0'){ // check for valid pair
                 String str = s.charAt(i-2)+""+s.charAt(i-1);
                 int num = Integer.parseInt(str);
-                System.out.println(num);
                 if(num<=26){
                     dp[i]+=dp[i-2];
                 }
             } 
         }
-        System.out.println(Arrays.toString(dp));
         return dp[n];
     }
 }
