@@ -1,38 +1,27 @@
 class Solution {
-    public int find(int n, int[] parent){
-        if(parent[n]==n)return parent[n];
-        return parent[n]=find(parent[n],parent);
-    }
-    public void union(int a, int b, int[] parent,int[] rank){
-        int parentA = find(a,parent);
-        int parentB = find(b,parent);
-        if(parentA==parentB)return;
-        if(rank[parentA]==rank[parentB]){
-            parent[parentB]=parentA;
-            rank[parentA]++;
+    public boolean dfs(HashMap<Integer,List<Integer>> graph, int from, int to, boolean[] visited){
+        if(from==to)return true;
+        visited[from]=true;
+        List<Integer> li = graph.get(from);
+        for(int i=0;i<li.size();i++){
+            if(visited[li.get(i)])continue;
+            if(dfs(graph,li.get(i),to,visited)){
+                return true;
+            }
         }
-        else if(rank[parentA]>rank[parentB]){
-            parent[parentB]=parentA;
-        }
-        else{
-            parent[parentA]=parentB;
-        }
+        return false;
     }
     public int[] findRedundantConnection(int[][] edges) {
-        int n = edges.length;
-        int[] parent = new int[n+1];
-        int[] rank = new int[n+1];
-        for(int i=0;i<=n;i++){
-            parent[i]=i;
-            rank[i]=1;
-        }
-        for(int[] edge: edges){
-            int a = edge[0];
-            int b = edge[1];
-            if(find(a,parent)==find(b,parent)){
+        HashMap<Integer,List<Integer>> graph = new HashMap<>();
+        for(int[] edge : edges){
+            boolean[] visited = new boolean[edges.length+1];
+            int from = edge[0];
+            int to = edge[1];
+            if(graph.containsKey(from) && graph.containsKey(to) && dfs(graph,from,to,visited)){
                 return edge;
             }
-            union(a,b,parent,rank);
+            graph.computeIfAbsent(from, k -> new ArrayList<>()).add(to);
+            graph.computeIfAbsent(to, k -> new ArrayList<>()).add(from);
         }
         return new int[]{};
     }
