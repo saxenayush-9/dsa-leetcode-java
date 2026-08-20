@@ -16,6 +16,7 @@ class Solution {
         que.add(new Node(0,0,1));
         grid[0][0]=1;
 
+        int[][] dirs = {{-1,0},{1,0},{0,-1},{0,1},{-1,-1},{-1,1},{1,-1},{1,1}};
         while(!que.isEmpty()){
             Node node = que.remove();
 
@@ -25,7 +26,6 @@ class Solution {
             
             if(row==n-1 && col==n-1) return distance;
 
-            int[][] dirs = {{-1,0},{1,0},{0,-1},{0,1},{-1,-1},{-1,1},{1,-1},{1,1}};
 
             for(int[] dir: dirs){
                 int currRow = row+dir[0];
