@@ -1,41 +1,37 @@
 class Solution {
     public boolean canFinish(int numCourses, int[][] prerequisites) {
-        int n = numCourses;
+
+        int n = prerequisites.length;
+
+        if(n==0)return true;
         HashMap<Integer,List<Integer>> graph = new HashMap<>();
-        for(int[] arr : prerequisites){
-            int a = arr[0];
-            int b = arr[1];
-            if(graph.containsKey(a)){
-                graph.get(a).add(b);
-            }
-            else{
-                List<Integer> li = new ArrayList<>();
-                li.add(b);
-                graph.put(a,li);
-            }
+
+        for(int[] course : prerequisites){
+            int from = course[0];
+            int to = course[1];
+            graph.computeIfAbsent(to,k-> new ArrayList<>()).add(from);
         }
-        boolean[] visited = new boolean[n];
-        boolean[] visiting = new boolean[n];
-        for(int i=0;i<n;i++){
-            if(visited[i])continue;
-            if(isCycle(graph,i,visited,visiting))return false;
+        
+        int[] state = new int[numCourses]; // 0=unvisited, 1=visiting, 2=visited
+        
+        
+        for(int i=0;i<numCourses;i++){
+            if(state[i]==0 && hasCycle(graph,i,state))return false;
         }
         return true;
     }
-    public boolean isCycle(HashMap<Integer,List<Integer>> graph, int node, boolean[] visited, boolean[] visiting){
-        if(visiting[node])return true;
-        if(!graph.containsKey(node)){
-            visited[node]=true;
-            return false;
-        }
-        visiting[node]=true;
+
+    public boolean hasCycle(HashMap<Integer,List<Integer>> graph, int node, int[] state){
+        if(state[node]==1)return true;
+        if(state[node]==2)return false;
+
+        if(!graph.containsKey(node))return false;
+        state[node]=1;
         List<Integer> li = graph.get(node);
-        for(int i=0;i<li.size();i++){
-            if(visited[li.get(i)])continue;
-            if(isCycle(graph,li.get(i),visited,visiting))return true;
+        for(int nbr : li){
+            if(hasCycle(graph,nbr,state))return true;
         }
-        visiting[node]=false;
-        visited[node]=true;
+        state[node]=2;
         return false;
     }
 }
