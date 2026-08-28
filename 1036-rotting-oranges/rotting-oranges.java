@@ -30,7 +30,7 @@ class Solution {
                 int currRow = row+dir[0];
                 int currCol = col+dir[1];
 
-                if(currRow>=0 && currCol>=0 && currRow<n && currCol<m && !visited[currRow][currCol] && grid[currRow][currCol]==1){
+                if(currRow>=0 && currCol>=0 && currRow<n && currCol<m  && grid[currRow][currCol]==1){
                     visited[currRow][currCol]=true;
                     grid[currRow][currCol]=grid[row][col]+1;
                     str = currRow+","+currCol;
@@ -54,7 +54,7 @@ class Solution {
                 }
             }
         }
-        
+
         return res==Integer.MIN_VALUE?0:res-2;
     }
 }
