@@ -3,16 +3,12 @@ class Solution {
         int n = grid.length;
         int m = grid[0].length;
 
-        Queue<String> que = new LinkedList<>();
-
-        boolean[][] visited = new boolean[n][m];
+        Queue<int[]> que = new LinkedList<>();
 
         for(int i=0;i<n;i++){
             for(int j=0;j<m;j++){
                 if(grid[i][j]==2){
-                    String str = i+","+j;
-                    visited[i][j]=true;
-                    que.add(str);
+                    que.add(new int[] {i,j});
                 }
             }
         }
@@ -20,21 +16,18 @@ class Solution {
         int[][] dirs = {{-1,0},{0,-1},{1,0},{0,1}};
 
         while(!que.isEmpty()){
-            String str = que.remove();
-            String[] st = str.trim().split(",");
+            int[] arr = que.remove();
 
-            int row = Integer.parseInt(st[0]);
-            int col = Integer.parseInt(st[1]);
+            int row = arr[0];
+            int col = arr[1];
 
             for(int[] dir: dirs){
                 int currRow = row+dir[0];
                 int currCol = col+dir[1];
 
-                if(currRow>=0 && currCol>=0 && currRow<n && currCol<m  && grid[currRow][currCol]==1){
-                    visited[currRow][currCol]=true;
+                if(currRow>=0 && currCol>=0 && currRow<n && currCol<m && grid[currRow][currCol]==1){
                     grid[currRow][currCol]=grid[row][col]+1;
-                    str = currRow+","+currCol;
-                    que.add(str);
+                    que.add(new int[] {currRow,currCol});
                 }
             }
         }
@@ -50,7 +43,7 @@ class Solution {
                     return -1;
                 }
                 else{
-                    res= Math.max(res,grid[i][j]);
+                    res = Math.max(res,grid[i][j]);
                 }
             }
         }
