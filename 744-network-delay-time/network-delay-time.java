@@ -1,56 +1,57 @@
 class Solution {
     class Node{
-        int to;
+        int node;
         int time;
-        Node(int to, int time){
-            this.to=to;
+        Node(int node, int time){
+            this.node=node;
             this.time=time;
         }
     }
     public int networkDelayTime(int[][] times, int n, int k) {
-        HashMap<Integer,List<Node>> graph = new HashMap<>();
-
-        int[] distance = new int[n+1];
-        Arrays.fill(distance,Integer.MAX_VALUE);
+        Map<Integer,List<Node>> graph = new HashMap<>();
 
         for(int[] time: times){
             int from = time[0];
             int to = time[1];
-            int timeTaken = time[2];
+            int curTime = time[2];
 
-            graph.computeIfAbsent(from,l-> new ArrayList<>()).add(new Node(to,timeTaken));
+            graph.computeIfAbsent(from,l-> new ArrayList<>()).add(new Node(to,curTime));
         }
 
-        PriorityQueue<int[]> minHeap = new PriorityQueue<>((a,b)->a[1]-b[1]);
+        int[] minTime = new int[n+1];
+        Arrays.fill(minTime,Integer.MAX_VALUE);
 
-        minHeap.add(new int[]{k,0});
-        distance[k]=0;
-
-        int ans = -1;
+        PriorityQueue<Node> minHeap = new PriorityQueue<>((a,b)-> a.time-b.time);
+        minHeap.add(new Node(k,0));
+        minTime[k]=0;
 
         while(!minHeap.isEmpty()){
-            int[] arr = minHeap.remove();
+            Node curNode = minHeap.remove();
+            int from = curNode.node;
+            int time = curNode.time;
 
-            int node = arr[0];
-            int time = arr[1];
+            if(!graph.containsKey(from))continue;
 
-            if (time > distance[node]) continue;
+            List<Node> nbrs = graph.get(from);
 
-            if(!graph.containsKey(node))continue;
+            for(Node nbrNode : nbrs){
+                int nbr = nbrNode.node;
+                int nbrTime = nbrNode.time;
 
-            List<Node> li = graph.get(node);
-
-            for(Node q : li){
-                if(distance[q.to]<=q.time+time)continue;
-                distance[q.to]=q.time+time;
-                minHeap.add(new int[]{q.to,q.time+time});
+                int newTime = time+nbrTime;
+                if(newTime<minTime[nbr]){
+                    minTime[nbr]=newTime;
+                    minHeap.add(new Node(nbr,newTime));
+                }
             }
         }
 
+        int res=Integer.MIN_VALUE;
+
         for(int i=1;i<=n;i++){
-            ans=Math.max(ans,distance[i]);
+            res = Math.max(res,minTime[i]);
         }
 
-        return ans==Integer.MAX_VALUE?-1:ans;
+        return res==Integer.MAX_VALUE?-1:res;
     }
 }
