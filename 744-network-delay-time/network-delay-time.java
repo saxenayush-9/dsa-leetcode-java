@@ -30,6 +30,7 @@ class Solution {
             int from = curNode.node;
             int time = curNode.time;
 
+            if (time > minTime[from]) continue;
             if(!graph.containsKey(from))continue;
 
             List<Node> nbrs = graph.get(from);
