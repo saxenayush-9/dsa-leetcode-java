@@ -1,69 +1,79 @@
 class LRUCache {
-    int val;
-    int key;
-    LRUCache prev;
-    LRUCache next;
-    int n;
-    int count = 0;
-    HashMap<Integer, LRUCache> hmap;
-    LRUCache head;
-    LRUCache tail;
 
-    public LRUCache(int key, int val) {
-        this.key = key;
-        this.val = val;
-    }
+    class Node{
+        int key;
+        int val;
+        Node prev;
+        Node next;
 
-    public LRUCache(int capacity) {
-        this.n = capacity;
-        hmap = new HashMap<>();
-        head = new LRUCache(-1, -1);
-        tail = new LRUCache(-1, -1);
-        head.next = tail;
-        tail.prev = head;
-    }
-
-    public int get(int key) {
-        if (!hmap.containsKey(key)) {
-            return -1;
-        } else {
-            LRUCache node = hmap.get(key);
-            node.prev.next = node.next;
-            node.next.prev = node.prev;
-            node.prev = tail.prev;
-            tail.prev = node;
-            node.prev.next = node;
-            node.next = tail;
-            return node.val;
+        Node(int key,int val){
+            this.key=key;
+            this.val=val;
         }
     }
 
+    HashMap<Integer,Node> hmap;
+
+    List<Node> lru;
+    int capacity = 0;
+
+    Node head;
+    Node tail;
+
+    public void placeAtFront(Node node){
+        Node prev = node.prev;
+        Node next = node.next;
+
+        if(prev!=null)prev.next = next;
+        if(next!=null)next.prev = prev;
+
+        node.next = head.next;
+        head.next = node;
+        node.prev = head;
+        node.next.prev = node;
+    }
+
+    public void removeFromBack(){
+        Node node = tail.prev;
+        hmap.remove(node.key);
+
+        Node prev = node.prev;
+        Node next = node.next;
+
+        if(prev!=null)prev.next = next;
+        if(next!=null)next.prev = prev;
+    }
+
+    public LRUCache(int capacity) {
+        hmap=new HashMap<>();
+        this.capacity=capacity;
+        head = new Node(-1,-1);
+        tail = new Node(-1,-1);
+
+        head.next=tail;
+        tail.prev=head;
+    }
+    
+    public int get(int key) {
+        if(!hmap.containsKey(key))return -1;
+        Node node = hmap.get(key);
+        placeAtFront(node);
+        return node.val;
+    }
+    
     public void put(int key, int value) {
-        if (hmap.containsKey(key)) {
-            LRUCache node = hmap.get(key);
-            node.val = value;
-            hmap.put(key, node);
-            node.prev.next = node.next;
-            node.next.prev = node.prev;
-            node.prev = tail.prev;
-            tail.prev = node;
-            node.prev.next = node;
-            node.next = tail;
-        } else {
-            if (count == n) {
-                LRUCache nodeToRemove = head.next;
-                nodeToRemove.prev.next = nodeToRemove.next;
-                nodeToRemove.next.prev = nodeToRemove.prev;
-                hmap.remove(nodeToRemove.key);
-                count--;
+        if(hmap.containsKey(key)){
+           Node node = hmap.get(key);
+           node.val = value;
+           placeAtFront(node);
+        }
+        else{
+            Node node = new Node(key,value);
+            if(hmap.size()>=capacity){
+                removeFromBack();
             }
-            LRUCache node = new LRUCache(key, value);
-            node.prev = tail.prev;
-            tail.prev = node;
-            node.prev.next = node;
-            node.next = tail;
-            count++;
-            hmap.put(key, node);
+            hmap.put(key,node);
+            placeAtFront(node);
         }
     }
 }
