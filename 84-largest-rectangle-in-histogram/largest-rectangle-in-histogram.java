@@ -1,41 +1,59 @@
 class Solution {
     public int largestRectangleArea(int[] heights) {
         int n = heights.length;
-        int[] nse = new int[n];
-        int[] pse = new int[n];
-        Stack<Integer> stk = new Stack<>();
+
+        int[] leftSmaller = new int[n];
+        int[] rightSmaller = new int[n];
+
+        Stack<Integer> rightSmallerStk = new Stack<>();
+        Stack<Integer> leftSmallerStk = new Stack<>();
+
         for(int i=n-1;i>=0;i--){
-            while(!stk.isEmpty() && heights[stk.peek()]>=heights[i]){
-                stk.pop();
+            while(!rightSmallerStk.isEmpty() && heights[rightSmallerStk.peek()]>=heights[i]){
+                rightSmallerStk.pop();
             }
-            if(stk.isEmpty()){
-                nse[i] = n;
-            }
-            else{
-                nse[i] = stk.peek();
-            }
-            stk.push(i);
-        }
-        stk.clear();
-        for(int i=0;i<n;i++){
-            while(!stk.isEmpty() && heights[stk.peek()]>=heights[i]){
-                stk.pop();
-            }
-            if(stk.isEmpty()){
-                pse[i] = -1;
+
+            if(rightSmallerStk.isEmpty()){
+                rightSmaller[i]=n;
             }
             else{
-                pse[i]=stk.peek();
+                rightSmaller[i]=rightSmallerStk.peek();
             }
-            stk.push(i);
+
+            rightSmallerStk.push(i);
+           
         }
-        int maxArea =  Integer.MIN_VALUE;
+
         for(int i=0;i<n;i++){
-            int length = nse[i]-pse[i]-1;
-            int width = heights[i];
-            int currArea = length*width;
-            maxArea = Math.max(currArea,maxArea);
+            while(!leftSmallerStk.isEmpty() && heights[leftSmallerStk.peek()]>=heights[i]){
+                leftSmallerStk.pop();
+            }
+
+            if(leftSmallerStk.isEmpty()){
+                leftSmaller[i]=-1;
+            }
+            else{
+                leftSmaller[i]=leftSmallerStk.peek();
+            }
+
+            leftSmallerStk.push(i);
         }
+
+        int maxArea = Integer.MIN_VALUE;
+
+        for(int i=0;i<n;i++){
+            int left = leftSmaller[i];
+            int right = rightSmaller[i];
+
+            int width = right-left-1;
+            int height = heights[i];
+
+            int area = width*height;
+
+            maxArea = Math.max(maxArea,area);
+        }
+
         return maxArea;
+
     }
 }
