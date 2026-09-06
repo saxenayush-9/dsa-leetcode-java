@@ -6,7 +6,6 @@ class Solution {
         hmap.put(0,1);
 
         int prefixSum = 0;
-
         int count = 0;
 
         for(int i=0;i<n;i++){
@@ -18,7 +17,6 @@ class Solution {
             }
             
             hmap.compute(key,(ky,v)-> v==null? v=1 : v+1);
-            
         }   
         return count;
     }
