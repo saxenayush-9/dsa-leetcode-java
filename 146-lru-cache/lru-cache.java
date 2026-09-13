@@ -1,80 +1,75 @@
 class LRUCache {
 
-    class Node{
+    class LRUNode{
         int key;
         int val;
-        Node prev;
-        Node next;
-
-        Node(int key,int val){
+        LRUNode prev;
+        LRUNode next;
+        LRUNode(int key, int val){
             this.key=key;
             this.val=val;
         }
     }
 
-    HashMap<Integer,Node> hmap;
+    int capacity;
+    int size = 0;
+    LRUNode head;
+    LRUNode tail;
 
-    List<Node> lru;
-    int capacity = 0;
+    HashMap<Integer,LRUNode> hmap;
 
-    Node head;
-    Node tail;
-
-    public void placeAtFront(Node node){
-        Node prev = node.prev;
-        Node next = node.next;
-
-        if(prev!=null)prev.next = next;
-        if(next!=null)next.prev = prev;
-
-        node.next = head.next;
-        head.next = node;
-        node.prev = head;
-        node.next.prev = node;
+    public void removeLast(){
+        LRUNode last = tail.prev;
+        last.prev.next=tail;
+        tail.prev=last.prev;
+        hmap.remove(last.key);
     }
 
-    public void removeFromBack(){
-        Node node = tail.prev;
-        hmap.remove(node.key);
+    public void moveForward(LRUNode n){
+        if(n.prev!=null)n.prev.next=n.next;
+        if(n.next!=null)n.next.prev=n.prev;
 
-        Node prev = node.prev;
-        Node next = node.next;
-
-        if(prev!=null)prev.next = next;
-        if(next!=null)next.prev = prev;
+        n.next=head.next;
+        head.next.prev=n;
+        head.next=n;
+        n.prev=head;
     }
 
     public LRUCache(int capacity) {
-        hmap=new HashMap<>();
         this.capacity=capacity;
-        head = new Node(-1,-1);
-        tail = new Node(-1,-1);
-
+        head=new LRUNode(-1,-1);
+        tail=new LRUNode(-1,-1);
+        hmap = new HashMap<>();
         head.next=tail;
         tail.prev=head;
     }
     
     public int get(int key) {
-        if(!hmap.containsKey(key))return -1;
-        Node node = hmap.get(key);
-        placeAtFront(node);
-        return node.val;
+        if(hmap.containsKey(key)){
+            LRUNode node = hmap.get(key);
+            moveForward(node);
+            return node.val;
+        }
+        else{
+            return -1;
+        }
     }
     
     public void put(int key, int value) {
         if(hmap.containsKey(key)){
-           Node node = hmap.get(key);
-           node.val = value;
-           placeAtFront(node);
+            LRUNode node = hmap.get(key);
+            node.val=value;
+            moveForward(node);
+            return;
         }
-        else{
-            Node node = new Node(key,value);
-            if(hmap.size()>=capacity){
-                removeFromBack();
-            }
-            hmap.put(key,node);
-            placeAtFront(node);
+        if(size>=capacity){
+            removeLast();
+            size--;
         }
+        LRUNode newNode = new LRUNode(key,value);
+        moveForward(newNode);
+        hmap.put(key,newNode);
+        size++;
     }
 }
 
